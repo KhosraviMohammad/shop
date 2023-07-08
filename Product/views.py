@@ -7,6 +7,7 @@ from Product.models import (
 from Product.serializers import (
     ProductSerializer
 )
+from generic import classes as g_classes
 
 
 # Create your views here.
@@ -15,3 +16,4 @@ from Product.serializers import (
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [g_classes.IsAdminUserOrReadOnlyPermission]
