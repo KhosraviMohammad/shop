@@ -37,13 +37,17 @@ class BaseFieldsModel(models.Model):
     create_date = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     update_date = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایشی')
 
+    class Meta:
+        abstract = True
+        ordering = ['create_date']
+
 
 class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     """
     مدل انتزاعی برای ایجاد کاربران جدید
     """
     GENDER_SELECT = (
-        ('female', 'غیر فعال'),
+        ('female', 'مونث'),
         ('male', 'مذکر'),
     )
 
