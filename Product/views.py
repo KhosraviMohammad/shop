@@ -17,11 +17,11 @@ class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [g_classes.IsAdminUserOrReadOnlyPermission]
-
+    filterset_fields = ['id', 'name', 'categories']
 
 
 class CategoryView(viewsets.ModelViewSet):
     queryset = Category.objects.all().prefetch_related('product_set')
     serializer_class = CategorySerializer
     permission_classes = [g_classes.IsAdminUserOrReadOnlyPermission]
-
+    filterset_fields = ['name']
