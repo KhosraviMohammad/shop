@@ -10,7 +10,7 @@ from BaseUser import models as user_models
 
 def product_image_directory_path(instance, filename):
     filename, extension = os.path.splitext(filename)
-    return f'products/{instance.name}-{instance.id}/{instance.name}{extension}'
+    return f'products/{instance.name}/{instance.name}{extension}'
 
 
 class Product(user_models.BaseFieldsModel):

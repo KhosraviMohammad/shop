@@ -1,6 +1,7 @@
 import uuid
 import os
 import re
+import datetime
 
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
@@ -20,9 +21,8 @@ def avatar_directory_path(instance, filename):
     """
 
     folder = instance.__class__.__name__
-    file_url = os.path.join('user/profile/', '{folder}/{user}/{uuid}.{suffix}'.format(
-        folder=folder,
-        user=instance.pk, uuid=uuid.uuid4(),
+    file_url = os.path.join('user/profile/', '{folder}/{uuid}.{suffix}'.format(
+        folder=folder, uuid=uuid.uuid4(),
         suffix=filename.split(".")[-1]), )
     return file_url
 
@@ -74,5 +74,3 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
-
-
