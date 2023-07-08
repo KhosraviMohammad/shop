@@ -5,6 +5,7 @@ __pycache__
 venv
 EDIT ELECTROPART
 ignore_dir
+static
 
 #files
 db.sqlite3
