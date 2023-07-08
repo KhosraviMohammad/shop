@@ -42,6 +42,10 @@ class BaseFieldsModel(models.Model):
         ordering = ['create_date']
 
 
+class CustomUserManager(UserManager):
+    pass
+
+
 class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     """
     مدل انتزاعی برای ایجاد کاربران جدید
@@ -50,7 +54,7 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
         ('female', 'مونث'),
         ('male', 'مذکر'),
     )
-
+    username = models.CharField(max_length=150, unique=True, verbose_name='نام کاربری')
     first_name = models.CharField(verbose_name='نام', max_length=30)
     gender = models.CharField(choices=GENDER_SELECT, verbose_name='جنسیت', max_length=20)
     last_name = models.CharField(verbose_name='نام خانوادگی', max_length=30)
@@ -66,7 +70,9 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     USERNAME_FIELD = 'mobile_number'
     REQUIRED_FIELDS = []
 
-    objects = UserManager()
+    objects = CustomUserManager()
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
+
+
