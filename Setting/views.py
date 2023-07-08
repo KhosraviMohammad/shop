@@ -43,6 +43,7 @@ def account_api_v1_root(request, format=None):
 def product_api_v1_root(request, format=None):
     return Response({
         'apis': {
+            'product': reverse('product-list', request=request, format=format),
         }
     })
 
