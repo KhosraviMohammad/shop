@@ -19,6 +19,7 @@ def api_v1_root(request, format=None):
     return Response({
         'apis': {
             'account api': reverse('account_api_v1_root', request=request, format=format),
+            'product api': reverse('product_api_v1_root', request=request, format=format),
         }
     })
 
@@ -38,6 +39,11 @@ def account_api_v1_root(request, format=None):
     })
 
 
-
+@api_view(['GET'])
+def product_api_v1_root(request, format=None):
+    return Response({
+        'apis': {
+        }
+    })
 
 

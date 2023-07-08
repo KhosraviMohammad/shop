@@ -1,10 +1,8 @@
 from django.urls import path
 
-
 from Setting.views import (
-    api_root, api_v1_root, account_api_v1_root
+    api_root, api_v1_root, account_api_v1_root, product_api_v1_root,
 )
-
 
 urlpatterns = [
     path('', api_root, name='api_root'),
@@ -12,6 +10,7 @@ urlpatterns = [
 
     # api v1 start
     path('api/v1/account', account_api_v1_root, name='account_api_v1_root'),
+    path('api/v1/product', product_api_v1_root, name='product_api_v1_root'),
     # api v1 end
 
 ]
