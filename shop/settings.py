@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'BaseUser',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'rest_registration',
 
     # our apps
-    'BaseUser',
+
     'Setting',
     'Product',
 ]
