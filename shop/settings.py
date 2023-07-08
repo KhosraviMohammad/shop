@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # our apps
     'BaseUser',
+    'Setting'
 ]
 
 MIDDLEWARE = [
