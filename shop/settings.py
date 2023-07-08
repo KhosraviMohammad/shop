@@ -12,21 +12,26 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from distutils.util import strtobool
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!6!tq*2m_!*x*+0q6#(#46(#=i9s2=5pdzh)jcdm2xwv&=x_0q'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-*0v^^f9@_t&mk*d(nyeuqth_=0adg143)(7@sd)xz11%62xfws')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = bool(strtobool(os.getenv('DEBUG', 'True'))),
+
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
+
 
 # Application definition
 
@@ -45,6 +50,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'rest_registration',
+    'drf_yasg',
+    'django_filters',
 
     # our apps
 
@@ -90,12 +97,12 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shop',
-        'USER': 'postgres',
-        'PASSWORD': 'amir',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql_psycopg2'),
+        'NAME': os.getenv('DB_NAME', 'shop'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'amir'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', 5432),
     },
 }
 
