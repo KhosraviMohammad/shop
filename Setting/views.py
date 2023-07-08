@@ -44,6 +44,7 @@ def product_api_v1_root(request, format=None):
     return Response({
         'apis': {
             'product': reverse('product-list', request=request, format=format),
+            'category': reverse('category-list', request=request, format=format),
         }
     })
 
