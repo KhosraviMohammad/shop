@@ -192,6 +192,8 @@ REST_REGISTRATION = {
     'REGISTER_EMAIL_VERIFICATION_ENABLED': False,
     'RESET_PASSWORD_VERIFICATION_ENABLED': False,
     'REGISTER_SERIALIZER_PASSWORD_CONFIRM': False,
+    'REGISTER_SERIALIZER_CLASS': 'BaseUser.serializers.UserRegisterSerializer',
+
 }
 
 # django-cors-headers
