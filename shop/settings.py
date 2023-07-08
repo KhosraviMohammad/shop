@@ -25,13 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-*0v^^f9@_t&mk*d(nyeuqth_=0adg143)(7@sd)xz11%62xfws')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 
 DEBUG = bool(strtobool(os.getenv('DEBUG', 'True'))),
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '*')]
-
 
 # Application definition
 
@@ -52,6 +50,7 @@ INSTALLED_APPS = [
     'rest_registration',
     'drf_yasg',
     'django_filters',
+    'django_cleanup.apps.CleanupConfig',
 
     # our apps
 
@@ -143,7 +142,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/static")
 
 MEDIA_ROOT = BASE_DIR / "static/media"
 MEDIA_URL = "/static/media/"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
