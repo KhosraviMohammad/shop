@@ -86,9 +86,13 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'shop',
+        'USER': 'postgres',
+        'PASSWORD': 'amir',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    },
 }
 
 # Password validation
@@ -177,8 +181,13 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-
 # django-cors-headers
 # https://github.com/adamchainz/django-cors-headers
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# customized user
+# https://docs.djangoproject.com/en/4.1/topics/auth/customizing/
+
+
+AUTH_USER_MODEL = 'BaseUser.User'
