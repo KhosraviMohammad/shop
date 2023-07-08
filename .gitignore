@@ -1,0 +1,13 @@
+#dir
+
+.idea
+__pycache__
+venv
+EDIT ELECTROPART
+ignore_dir
+
+#files
+db.sqlite3
+
+
+
