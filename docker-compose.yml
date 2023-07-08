@@ -1,0 +1,56 @@
+version: '2.2'
+
+services:
+  shop:
+    build: .
+    container_name: shop-django
+    restart: on-failure
+    depends_on:
+      - postgres
+    working_dir: /shop
+    volumes:
+      - ./:/shop
+    environment:
+      'DB_ENGINE': django.db.backends.postgresql_psycopg2
+      'DB_NAME': shop
+      'DB_USER': postgres
+      'DB_PASSWORD': amir
+      'DB_HOST': postgres
+      'DB_PORT': 5432
+      'DEBUG': "False"
+      'SECRET_KEY': asldmasfnfindsoijeqoj213j2djiai8u32798ryhwwhc7934y
+      'ALLOWED_HOSTS': "*"
+    networks:
+      shopNet:
+        aliases:
+          - shop
+    ports:
+      - 8000:8000
+    command:
+#      bash -c "source dockervenv/bin/activate && pip install -r req.txt && python manage.py migrate
+#      && gunicorn --workers=1 -b 0.0.0.0:8000 'Exchange.wsgi:application'"
+      bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py runserver 8000"
+
+
+  postgres:
+    container_name: shop-postgres
+    image: postgres
+    restart: on-failure
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      'POSTGRES_USER': postgres
+      'POSTGRES_PASSWORD': amir
+      'POSTGRES_DB': shop
+    ports:
+      - 5432:5432
+    networks:
+      shopNet:
+        aliases:
+          - postgres
+
+networks:
+  shopNet:
+    driver: bridge
+volumes:
+  postgres:
