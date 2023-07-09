@@ -4,19 +4,26 @@ services:
   shop:
     build: .
     container_name: shop-django
-    restart: on-failure
+#    restart: on-failure
     depends_on:
       - postgres
+      - mysql
     working_dir: /shop
     volumes:
       - ./:/shop
     environment:
-      'DB_ENGINE': django.db.backends.postgresql_psycopg2
+      'DB_ENGINE': django.db.backends.mysql
       'DB_NAME': shop
-      'DB_USER': postgres
+      'DB_USER': root1
       'DB_PASSWORD': amir
-      'DB_HOST': postgres
-      'DB_PORT': 5432
+      'DB_HOST': mysql
+      'DB_PORT': 3306
+#      'DB_ENGINE': django.db.backends.postgresql_psycopg2
+#      'DB_NAME': shop
+#      'DB_USER': postgres
+#      'DB_PASSWORD': amir
+#      'DB_HOST': postgres
+#      'DB_PORT': 5432
       'DEBUG': "False"
       'SECRET_KEY': asldmasfnfindsoijeqoj213j2djiai8u32798ryhwwhc7934y
       'ALLOWED_HOSTS': "*"
@@ -47,8 +54,25 @@ services:
         aliases:
           - postgres
 
+  mysql:
+    container_name: shop-mysql
+    image: mysql
+    restart: on-failure
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      'MYSQL_ROOT_PASSWORD': amir
+      'MYSQL_DATABASE': shop
+      'MYSQL_USER': root1
+      'MYSQL_PASSWORD': amir
+    networks:
+      shopNet:
+        aliases:
+          - mysql
+
 networks:
   shopNet:
     driver: bridge
 volumes:
   postgres:
+  mysql:
