@@ -13,7 +13,7 @@ def product_image_directory_path(instance, filename):
     return f'products/{instance.name}/{instance.name}{extension}'
 
 
-class Product(user_models.BaseFieldsModel):
+class Product(user_models.BaseUserFieldModel):
     name = models.CharField(max_length=150, verbose_name='نام محصول')
     image = models.ImageField(upload_to=product_image_directory_path, blank=True, null=True, verbose_name='تصویر')
     price = models.IntegerField(default=0, blank=True, verbose_name='قیمت')
@@ -24,7 +24,7 @@ class Product(user_models.BaseFieldsModel):
         return self.name
 
 
-class Category(user_models.BaseFieldsModel):
+class Category(user_models.BaseUserFieldModel):
     name = models.CharField(max_length=150, unique=True, verbose_name='نام')
 
     def __str__(self):

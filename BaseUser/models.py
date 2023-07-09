@@ -41,6 +41,29 @@ class BaseFieldsModel(models.Model):
         abstract = True
         ordering = ['create_date']
 
+    def update_field_model_obj(self, valid_data):
+        for key, value in valid_data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+
+
+class BaseUserFieldModel(BaseFieldsModel):
+    created_by = models.ForeignKey('BaseUser.User', on_delete=models.DO_NOTHING, blank=True, null=True,
+                                   verbose_name='سازنده', related_name='created_%(class)ss')
+    updated_by = models.ForeignKey('BaseUser.User', on_delete=models.DO_NOTHING, blank=True, null=True,
+                                   verbose_name='آخرین ویراستار', related_name='updated_%(class)ss')
+
+    class Meta:
+        abstract = True
+
+    def save(self, *args, **kwargs):
+        self.posted_user = kwargs.pop('user', None)
+        if self.posted_user and not self.posted_user.is_anonymous:
+            if self.pk is None:
+                self.created_by = self.posted_user
+            self.updated_by = self.posted_user
+        super(BaseFieldsModel, self).save(*args, **kwargs)
+
 
 class CustomUserManager(UserManager):
     pass
