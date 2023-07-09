@@ -12,7 +12,8 @@ class ProductSerializer(GenericHyperlinkedModelSerializer):
     class Meta:
         model = product_models.Product
         fields = [
-            'id', 'url', 'name', 'image', 'price', 'is_available', 'categories'
+            'id', 'url', 'name', 'image', 'price', 'is_available', 'categories', 'create_date', 'update_date',
+
         ]
 
 
@@ -24,7 +25,7 @@ class CategorySerializer(GenericHyperlinkedModelSerializer):
     class Meta:
         model = product_models.Category
         fields = [
-            'id', 'url', 'name', 'product_set', 'product_id_set'
+            'id', 'url', 'name', 'product_set', 'product_id_set', 'create_date', 'update_date',
         ]
 
     def get_product_id_set(self, obj):
