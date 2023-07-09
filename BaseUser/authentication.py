@@ -24,8 +24,4 @@ class CustomJWTAuthentication(JWTAuthentication):
 
     def validate_token(self, auth):
         if BlackListedAccessToken.objects.filter(token=auth.token.decode()).exists():
-            raise InvalidToken(
-                {
-                    "detail": _("Given token not valid"),
-                }
-            )
+            raise InvalidToken(_("تکن نامعتبر میباشد"))
