@@ -6,9 +6,11 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, UserManager, PermissionsMixin
 from django.core.validators import RegexValidator
+from django.conf import settings
 
 
 # Create your models here.
+
 
 def avatar_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -97,3 +99,29 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
+
+
+class OutstandingAccessToken(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    token = models.TextField()
+
+    class Meta:
+        ordering = ("user",)
+
+    def __str__(self):
+        return "Token for {} ".format(self.user)
+
+
+class BlackListedAccessToken(models.Model):
+    token = models.CharField(max_length=500)
+    user = models.ForeignKey(User, related_name="token_user", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("token", "user")
+
+    def __str__(self):
+        return f"Blacklisted token for {self.token.user}"
