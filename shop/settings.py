@@ -222,3 +222,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 
 AUTH_USER_MODEL = 'BaseUser.User'
+
+# Translation
+# https://docs.djangoproject.com/en/4.2/topics/i18n/translation/
+
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
