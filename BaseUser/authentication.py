@@ -1,4 +1,5 @@
 from django.utils.translation import gettext_lazy as _
+
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken
 
@@ -17,11 +18,12 @@ class CustomJWTAuthentication(JWTAuthentication):
     def authenticate(self, request):
         data = super(CustomJWTAuthentication, self).authenticate(request)
         if data is not None:
-            self.validate_token(data[1])
+            (user, auth) = data
+            self.validate_token(auth)
         return data
 
-    def validate_token(self, token):
-        if BlackListedAccessToken.objects.filter(token=token.token.decode()).exists():
+    def validate_token(self, auth):
+        if BlackListedAccessToken.objects.filter(token=auth.token.decode()).exists():
             raise InvalidToken(
                 {
                     "detail": _("Given token not valid"),
