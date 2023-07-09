@@ -1,12 +1,14 @@
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import update_last_login
 
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.models import update_last_login
-
-from BaseUser.models import User, BlackListedAccessToken, OutstandingAccessToken
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer, TokenObtainSerializer
+
+
+from BaseUser.models import User, BlackListedAccessToken, OutstandingAccessToken
 
 
 class UserRegisterSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,15 +48,15 @@ class CustomTokenObtainPairSerializer(TokenObtainSerializer):
 class BlockAccessTokenSerializer(serializers.Serializer):
     access = serializers.CharField()
 
-
     def validate(self, attrs):
         data = super().validate(attrs)
-        access_token = data.get('access')
-        outstanding_access_token_qu = OutstandingAccessToken.objects.filter(token=access_token)
+        raw_access_token = data.get('access')
+        outstanding_access_token_qu = OutstandingAccessToken.objects.filter(token=raw_access_token)
         if outstanding_access_token_qu.exists():
-            outstanding_access_token_obj = outstanding_access_token_qu.first()
-            BlackListedAccessToken.objects.create(token=access_token, user=outstanding_access_token_obj.user)
+            access_token_obj = api_settings.AUTH_TOKEN_CLASSES[0](raw_access_token)
+            user_id = access_token_obj.payload.get('user_id')
+            BlackListedAccessToken.objects.create(token=raw_access_token, user_id=user_id)
         else:
-            raise serializers.ValidationError('error')
+            raise serializers.ValidationError(_('تکن نامعتبر میباشد'))
 
         return data
