@@ -10,7 +10,8 @@ from BaseUser.models import OutstandingAccessToken, BlackListedAccessToken
 class AccessTokenBlockView(generics.GenericAPIView):
     serializer_class = BlockAccessTokenSerializer
 
+
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         return Response({'message': 'log out'}, status=200)
