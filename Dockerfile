@@ -1,4 +1,4 @@
-FROM python
+FROM python:3.10
 WORKDIR /shop
 SHELL ["/bin/bash", "-c"]
 COPY . .

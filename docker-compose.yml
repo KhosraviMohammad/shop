@@ -29,7 +29,7 @@ services:
     command:
 #      bash -c "source dockervenv/bin/activate && pip install -r req.txt && python manage.py migrate
 #      && gunicorn --workers=1 -b 0.0.0.0:8000 'Exchange.wsgi:application'"
-      bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py runserver 8000"
+      bash -c "pip install -r requirements.txt && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
 
   postgres:
@@ -42,8 +42,6 @@ services:
       'POSTGRES_USER': postgres
       'POSTGRES_PASSWORD': amir
       'POSTGRES_DB': shop
-    ports:
-      - 5432:5432
     networks:
       shopNet:
         aliases:
