@@ -3,9 +3,10 @@ from django.db import transaction
 from rest_framework import serializers
 
 from Product import models as product_models
+from generic.classes import GenericHyperlinkedModelSerializer
 
 
-class ProductSerializer(serializers.HyperlinkedModelSerializer):
+class ProductSerializer(GenericHyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -15,9 +16,10 @@ class ProductSerializer(serializers.HyperlinkedModelSerializer):
         ]
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(GenericHyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
     product_id_set = serializers.SerializerMethodField()
+    # product_set = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = product_models.Category
