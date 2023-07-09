@@ -41,3 +41,18 @@ class CustomTokenObtainPairSerializer(TokenObtainSerializer):
             update_last_login(None, self.user)
 
         return data
+
+
+class BlockAccessTokenSerializer(serializers.Serializer):
+    access = serializers.CharField()
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        access_token = data.get('access')
+        outstanding_access_token_qu = OutstandingAccessToken.objects.filter(token=access_token)
+        if outstanding_access_token_qu.exists():
+            BlackListedAccessToken.objects.create(token=access_token, user=self.context.get('user'))
+        else:
+            raise serializers.ValidationError('error')
+
+        return data

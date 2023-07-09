@@ -31,6 +31,7 @@ def account_api_v1_root(request, format=None):
             'token': reverse('token_obtain_pair', request=request, format=format),
             'token refresh': reverse('token_refresh', request=request, format=format),
             'token blacklist': reverse('token_blacklist', request=request, format=format),
+            'access token blacklist': reverse('access_token_blacklist', request=request, format=format),
             'register': reverse('rest-registration:register', request=request, format=format),
             'profile': reverse('rest-registration:profile', request=request, format=format),
             'login': reverse('rest-registration:login', request=request, format=format),
