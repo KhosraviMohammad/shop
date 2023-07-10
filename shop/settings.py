@@ -208,6 +208,7 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+
 }
 
 # Django REST Registration
@@ -220,6 +221,8 @@ REST_REGISTRATION = {
     'RESET_PASSWORD_VERIFICATION_ENABLED': False,
     'REGISTER_SERIALIZER_PASSWORD_CONFIRM': False,
     'REGISTER_SERIALIZER_CLASS': 'BaseUser.serializers.UserRegisterSerializer',
+    'AUTH_TOKEN_MANAGER_CLASS': 'BaseUser.auth_token_managers.JWTAuthTokenManager',
+    'LOGIN_RETRIEVE_TOKEN': True,
 
 }
 
