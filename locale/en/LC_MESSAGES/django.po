@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-09 15:49+0000\n"
+"POT-Creation-Date: 2023-07-10 04:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,6 +73,10 @@ msgstr "employment status"
 #: BaseUser/models.py:93
 msgid "ابر کاربر"
 msgstr "super user"
+
+#: BaseUser/views.py:16
+msgid "خارج شدیند"
+msgstr "log out"
 
 #: Product/models.py:17
 msgid "نام محصول"
