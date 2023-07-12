@@ -8,6 +8,7 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer, TokenObtainSerializer
 
 from BaseUser.models import User, BlackListedAccessToken, OutstandingAccessToken
+from generic.funcs import generate_state_full_jwt
 
 
 class UserRegisterSerializer(serializers.HyperlinkedModelSerializer):
@@ -31,13 +32,8 @@ class CustomTokenObtainPairSerializer(TokenObtainSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        refresh = self.get_token(self.user)
-
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-        outstanding_access_token = OutstandingAccessToken(token=data["access"], user=self.user)
-        outstanding_access_token.save()
-
+        state_full_jwt_token = generate_state_full_jwt(self.user)
+        data.update(state_full_jwt_token)
         if api_settings.UPDATE_LAST_LOGIN:
             update_last_login(None, self.user)
 

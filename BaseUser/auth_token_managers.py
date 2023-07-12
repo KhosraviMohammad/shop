@@ -6,6 +6,7 @@ from rest_framework_simplejwt.token_blacklist.models import OutstandingToken as 
 
 from BaseUser.authentication import CustomJWTAuthentication
 from BaseUser.models import OutstandingAccessToken, BlackListedAccessToken
+from generic.funcs import generate_state_full_jwt
 
 
 class JWTAuthTokenManager(AbstractAuthTokenManager):
@@ -35,13 +36,7 @@ class JWTAuthTokenManager(AbstractAuthTokenManager):
         BlacklistedRefreshToken.objects.bulk_create(black_list_refresh_obj_ls)
 
     def provide_token(self, user: 'AbstractBaseUser'):
-        from rest_framework_simplejwt.tokens import RefreshToken
 
-        data = {}
-        refresh = RefreshToken.for_user(user=user)
-        data["refresh"] = str(refresh)
-        data["access"] = str(refresh.access_token)
-        outstanding_access_token = OutstandingAccessToken(token=data["access"], user=user)
-        outstanding_access_token.save()
+        state_full_jwt = generate_state_full_jwt(user)
 
-        return data
+        return state_full_jwt
