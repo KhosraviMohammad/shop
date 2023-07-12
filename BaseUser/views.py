@@ -13,4 +13,4 @@ class AccessTokenBlockView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        return Response({'message': _('خارج شدیند')}, status=200)
+        return Response({'message': _('log out successfully')}, status=200)

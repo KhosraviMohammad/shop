@@ -7,7 +7,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer, TokenObtainSerializer
 
-
 from BaseUser.models import User, BlackListedAccessToken, OutstandingAccessToken
 
 
@@ -57,6 +56,6 @@ class BlockAccessTokenSerializer(serializers.Serializer):
             user_id = access_token_obj.payload.get('user_id')
             BlackListedAccessToken.objects.get_or_create(token=raw_access_token, user_id=user_id)
         else:
-            raise serializers.ValidationError(_('تکن نامعتبر میباشد'))
+            raise serializers.ValidationError(_('token is not valid'))
 
         return data
