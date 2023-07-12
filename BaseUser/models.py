@@ -69,7 +69,11 @@ class BaseUserFieldModel(BaseFieldsModel):
 
 
 class CustomUserManager(UserManager):
-    pass
+
+    def create_user(self, email=None, password=None, **extra_fields):
+        username = extra_fields.get('mobile_number')
+        user = super(CustomUserManager, self).create_user(username, email=email, password=password, **extra_fields)
+        return user
 
 
 class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
@@ -97,6 +101,11 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('email', None)
+        super(User, self).__init__(*args, **kwargs)
+        self.username = self.mobile_number
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
