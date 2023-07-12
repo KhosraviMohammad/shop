@@ -45,7 +45,10 @@ class BlockAccessTokenSerializer(serializers.Serializer):
         if outstanding_access_token_qu.exists():
             access_token_obj = api_settings.AUTH_TOKEN_CLASSES[0](raw_access_token)
             user_id = access_token_obj.payload.get('user_id')
-            BlackListedAccessToken.objects.get_or_create(token=raw_access_token, user_id=user_id)
+            if not BlackListedAccessToken.objects.filter(token=raw_access_token, user_id=user_id).exists():
+                BlackListedAccessToken.objects.create(token=raw_access_token, user_id=user_id)
+            else:
+                raise serializers.ValidationError(_('token is not valid'))
         else:
             raise serializers.ValidationError(_('token is not valid'))
 
