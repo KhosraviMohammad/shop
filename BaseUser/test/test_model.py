@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.contrib.auth.hashers import make_password
+
+from generic.classes import GenericTestCase
 
 # Create your tests here.
 
 User = get_user_model()
 
 
-class TestUserModel(TestCase):
+class TestUserModel(GenericTestCase):
 
     def setUp(self) -> None:
         self.user_fields = {
@@ -19,7 +19,7 @@ class TestUserModel(TestCase):
 
     def test_user_manger_create(self):
         user = User.objects.create_user(**self.user_fields)
-        user_in_db = User.objects.get(id=1)
+        user_in_db = User.objects.get(mobile_number='09103791346')
         self.assertEqual(user_in_db.username, self.user_fields.get('mobile_number'))
         self.assertEqual(user_in_db.first_name, self.user_fields.get('first_name'))
         self.assertEqual(user_in_db.last_name, self.user_fields.get('last_name'))
@@ -29,7 +29,7 @@ class TestUserModel(TestCase):
         user = User(**self.user_fields)
         user.set_password(self.user_fields.get('password'))
         user.save()
-        user_in_db = User.objects.get(id=1)
+        user_in_db = User.objects.get(mobile_number='09103791346')
         self.assertEqual(user_in_db.username, self.user_fields.get('mobile_number'))
         self.assertEqual(user_in_db.first_name, self.user_fields.get('first_name'))
         self.assertEqual(user_in_db.last_name, self.user_fields.get('last_name'))

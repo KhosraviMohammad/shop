@@ -99,7 +99,7 @@ class GenericHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
-def client_action_wrapper(action):
+def api_action_wrapper(action):
     def wrapper_method(self, *args, **kwargs):
         if self.view_name is None:
             raise ValueError("Must give value for `view_name` property")
@@ -112,26 +112,42 @@ def client_action_wrapper(action):
         if query_string is not None:
             url = url + f"?{query_string}"
 
-        return getattr(self.client, action)(url, *args, **kwargs)
+        return getattr(self.api, action)(url, *args, **kwargs)
 
     return wrapper_method
 
 
-class APIViewTestCase(TestCase):
+class GenericTestCase(TestCase):
+    pass
+
+
+class APIViewTestCase(GenericTestCase):
     client_class = APIClient
+
+    api = APIClient()
 
     def authenticate_with_token(self, type, token):
         """
         Authenticates requests with the given token.
         """
-        self.client.credentials(HTTP_AUTHORIZATION=f"{type} {token}")
+        self.api.credentials(HTTP_AUTHORIZATION=f"{type} {token}")
 
     view_name = None
 
-    view_post = client_action_wrapper("post")
-    view_get = client_action_wrapper("get")
-    view_put = client_action_wrapper("put")
-    view_delete = client_action_wrapper("delete")
+    view_post = api_action_wrapper("post")
+    view_get = api_action_wrapper("get")
+    view_put = api_action_wrapper("put")
+    view_delete = api_action_wrapper("delete")
 
 
+class APIRequestTestCase(GenericTestCase):
+    client_class = APIClient
 
+    api = APIRequestFactory()
+
+    view_name = None
+
+    request_post = api_action_wrapper("post")
+    request_get = api_action_wrapper("get")
+    request_put = api_action_wrapper("put")
+    request_delete = api_action_wrapper("delete")

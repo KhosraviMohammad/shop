@@ -22,13 +22,13 @@ class TestAccessTokenBlockView(APIViewTestCase):
         self.user = User.objects.create_user(**self.user_fields)
         self.state_full_token = generate_state_full_jwt(user=self.user)
 
-    def test_black_access_token(self):
+    def test_access_token_is_in_black_list(self):
         response = self.view_post(data={'access': self.state_full_token.get('access')})
         self.assertTrue(BlackListedAccessToken.objects.filter(token=self.state_full_token.get('access')).exists())
         self.assertEqual(response.status_code, 200)
         self.assertIn('message', response.data)
 
-    def test_black_invalid_access_token(self):
+    def test_invalid_access_token_not_to_block(self):
         response = self.view_post(data={'access': self.state_full_token.get('refresh')})
         self.assertEqual(response.status_code, 400)
         self.assertRaises(serializers.ValidationError)
