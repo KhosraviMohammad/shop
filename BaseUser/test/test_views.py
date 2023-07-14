@@ -37,6 +37,7 @@ class TestAccessTokenBlockView(APIViewTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertRaises(serializers.ValidationError)
 
+    def test_not_to_authenticate_user_with_blocked_token(self):
         BlackListedAccessToken.objects.create(user=self.user, token=self.state_full_token.get('access'))
         response = self.view_post(data={'access': self.state_full_token.get('access')})
         self.assertEqual(response.status_code, 400)

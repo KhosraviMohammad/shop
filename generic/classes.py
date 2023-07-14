@@ -1,5 +1,5 @@
 import traceback
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 
 from rest_framework.permissions import IsAdminUser, SAFE_METHODS
 
@@ -137,6 +137,7 @@ class APIViewTestCase(GenericTestCase):
     view_post = api_action_wrapper("post")
     view_get = api_action_wrapper("get")
     view_put = api_action_wrapper("put")
+    view_patch = api_action_wrapper("patch")
     view_delete = api_action_wrapper("delete")
 
 
