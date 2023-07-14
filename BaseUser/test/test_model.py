@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
 
-from generic.classes import GenericTestCase
+from generic.utils_test import TestCase
 
 # Create your tests here.
 
 User = get_user_model()
 
 
-class TestUserModel(GenericTestCase):
+class TestUserModel(TestCase):
 
     def setUp(self) -> None:
         self.user_fields = {

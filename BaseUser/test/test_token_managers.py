@@ -1,4 +1,4 @@
-from generic.classes import GenericTestCase
+from generic.utils_test import TestCase
 
 from django.contrib.auth import get_user_model
 
@@ -11,7 +11,7 @@ from generic.funcs import generate_state_full_jwt
 User = get_user_model()
 
 
-class TestJWTAuthTokenManager(GenericTestCase):
+class TestJWTAuthTokenManager(TestCase):
     def setUp(self) -> None:
         self.user_fields = {
             'mobile_number': '09103791346',

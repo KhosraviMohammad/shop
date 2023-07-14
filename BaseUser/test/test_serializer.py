@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from generic.classes import APIViewTestCase, APIRequestTestCase
+from generic.utils_test import APIViewTestCase, APIRequestTestCase
 
 from generic.funcs import generate_state_full_jwt
 from BaseUser.models import OutstandingAccessToken, BlackListedAccessToken

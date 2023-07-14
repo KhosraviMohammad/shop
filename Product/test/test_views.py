@@ -1,47 +1,45 @@
 from io import BytesIO
 
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
 
-from generic.classes import APIViewTestCase
+from generic.utils_test import APITransactionTestCase
 
 from generic.funcs import generate_state_full_jwt
-from BaseUser.models import OutstandingAccessToken, BlackListedAccessToken
 from Product.models import Product, Category
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 User = get_user_model()
 
 
-class TestProductListView(APIViewTestCase):
+class TestProductListView(APITransactionTestCase):
     view_name = 'product-list'
+    reset_sequences = True
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.user_fields = {
+
+    def setUp(self) -> None:
+        self.user_fields = {
             'mobile_number': '09103791346',
             'first_name': 'Mohammad',
             'last_name': 'Khosravi',
             'password': 'amir'
         }
-        cls.staff_user = User.objects.create_user(**cls.user_fields, is_staff=True)
-        cls.state_full_token = generate_state_full_jwt(user=cls.staff_user)
-        cls.cake_category = Category(name='cake', )
-        cls.cake_category.save(user=cls.staff_user)
-        cls.cake_category_product_list = [
+        self.staff_user = User.objects.create_user(**self.user_fields, is_staff=True)
+        self.state_full_token = generate_state_full_jwt(user=self.staff_user)
+        self.cake_category = Category(name='cake', )
+        self.cake_category.save(user=self.staff_user)
+        self.cake_category_product_list = [
             Product(name='simple cake', price=100, is_available=True),
             Product(name='chocolate cake', price=150, is_available=False),
             Product(name='vanilla cake', price=143, is_available=True),
         ]
 
-        for product in cls.cake_category_product_list:
-            product.save(user=cls.staff_user)
-            product.categories.set([cls.cake_category])
-        cls.other_product = [
+        for product in self.cake_category_product_list:
+            product.save(user=self.staff_user)
+            product.categories.set([self.cake_category])
+        self.other_product = [
             Product(name='other', price=250, is_available=True),
         ]
 
-        cls.other_product[0].save(user=cls.staff_user)
+        self.other_product[0].save(user=self.staff_user)
 
     def test_get_product_list_view(self):
         response = self.view_get()
@@ -131,33 +129,35 @@ class TestProductListView(APIViewTestCase):
         self.assertEqual(Product.objects.count(), 4)
 
 
-class TestProductDetailView(APIViewTestCase):
+class TestProductDetailView(APITransactionTestCase):
     view_name = 'product-detail'
+    reset_sequences = True
+
 
     @classmethod
-    def setUpTestData(cls):
-        cls.user_fields = {
+    def setUp(self):
+        self.user_fields = {
             'mobile_number': '09103791346',
             'first_name': 'Mohammad',
             'last_name': 'Khosravi',
             'password': 'amir'
         }
-        cls.staff_user = User.objects.create_user(**cls.user_fields, is_staff=True)
-        cls.state_full_token = generate_state_full_jwt(user=cls.staff_user)
-        cls.cake_category = Category(name='cake', )
-        cls.cake_category.save(user=cls.staff_user)
-        cls.cake_category_product_list = [
+        self.staff_user = User.objects.create_user(**self.user_fields, is_staff=True)
+        self.state_full_token = generate_state_full_jwt(user=self.staff_user)
+        self.cake_category = Category(name='cake', )
+        self.cake_category.save(user=self.staff_user)
+        self.cake_category_product_list = [
             Product(name='simple cake', price=100, is_available=True),
             Product(name='chocolate cake', price=150, is_available=False),
             Product(name='vanilla cake', price=143, is_available=True),
         ]
-        for product in cls.cake_category_product_list:
-            product.save(user=cls.staff_user)
-            product.categories.set([cls.cake_category])
-        cls.other_product = [
+        for product in self.cake_category_product_list:
+            product.save(user=self.staff_user)
+            product.categories.set([self.cake_category])
+        self.other_product = [
             Product(name='other', price=250, is_available=True),
         ]
-        cls.other_product[0].save(user=cls.staff_user)
+        self.other_product[0].save(user=self.staff_user)
 
     def test_get_detail_product(self):
         response = self.view_get(reverse_kwargs={'pk': self.cake_category_product_list[0].id})
@@ -378,23 +378,24 @@ class TestProductDetailView(APIViewTestCase):
         self.assertEqual(response.status_code, 403)
 
 
-class TestCategoryListView(APIViewTestCase):
+class TestCategoryListView(APITransactionTestCase):
     view_name = 'category-list'
+    reset_sequences = True
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.user_fields = {
+
+    def setUp(self):
+        self.user_fields = {
             'mobile_number': '09103791346',
             'first_name': 'Mohammad',
             'last_name': 'Khosravi',
             'password': 'amir'
         }
-        cls.staff_user = User.objects.create_user(**cls.user_fields, is_staff=True)
-        cls.state_full_token = generate_state_full_jwt(user=cls.staff_user)
-        cls.cake_category = Category(name='cake', )
-        cls.car_category = Category(name='car', )
-        cls.cake_category.save(user=cls.staff_user)
-        cls.car_category.save(user=cls.staff_user)
+        self.staff_user = User.objects.create_user(**self.user_fields, is_staff=True)
+        self.state_full_token = generate_state_full_jwt(user=self.staff_user)
+        self.cake_category = Category(name='cake', )
+        self.car_category = Category(name='car', )
+        self.cake_category.save(user=self.staff_user)
+        self.car_category.save(user=self.staff_user)
 
     def test_get_category_list_view(self):
         response = self.view_get()
@@ -437,28 +438,29 @@ class TestCategoryListView(APIViewTestCase):
         self.assertFalse(Category.objects.filter(name=category_data.get('name')).exists())
 
 
-class TestCategoryDetailView(APIViewTestCase):
+class TestCategoryDetailView(APITransactionTestCase):
     view_name = 'category-detail'
+    reset_sequences = True
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.user_fields = {
+
+    def setUp(self):
+        self.user_fields = {
             'mobile_number': '09103791346',
             'first_name': 'Mohammad',
             'last_name': 'Khosravi',
             'password': 'amir'
         }
-        cls.staff_user = User.objects.create_user(**cls.user_fields, is_staff=True)
-        cls.state_full_token = generate_state_full_jwt(user=cls.staff_user)
-        cls.cake_category = Category(name='cake', )
-        cls.car_category = Category(name='car', )
-        cls.cake_category.save(user=cls.staff_user)
-        cls.car_category.save(user=cls.staff_user)
-        cls.categories = [cls.cake_category, cls.car_category]
-        cls.new_category_data = {
+        self.staff_user = User.objects.create_user(**self.user_fields, is_staff=True)
+        self.state_full_token = generate_state_full_jwt(user=self.staff_user)
+        self.cake_category = Category(name='cake', )
+        self.car_category = Category(name='car', )
+        self.cake_category.save(user=self.staff_user)
+        self.car_category.save(user=self.staff_user)
+        self.categories = [self.cake_category, self.car_category]
+        self.new_category_data = {
             'name': 'new category',
         }
-        cls.pk = cls.cake_category.id
+        self.pk = self.cake_category.id
 
     def test_get_detail_category(self):
         response = self.view_get(reverse_kwargs={'pk': self.pk})
@@ -509,7 +511,7 @@ class TestCategoryDetailView(APIViewTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Category.objects.count(), len(self.categories))
 
-    def test_delete_product(self):
+    def test_delete_category(self):
         category_to_delete = self.categories[0]
         pk = category_to_delete.id
         response = self.view_delete(

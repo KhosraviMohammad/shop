@@ -1,4 +1,4 @@
-from generic.classes import APIRequestTestCase
+from generic.utils_test import APIRequestTestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from django.contrib.auth import get_user_model
