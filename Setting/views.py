@@ -5,6 +5,13 @@ from rest_framework.reverse import reverse
 
 # Create your views here.
 
+
+'''
+following views show user links of each api to easily access and supervise or even test them like api tester 
+
+by running python manage.py and check out root path in web browser
+'''
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({

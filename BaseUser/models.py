@@ -33,8 +33,12 @@ def avatar_directory_path(instance, filename):
 class BaseFieldsModel(models.Model):
     """
 
-    مدل برای استفاده در همه مدل‌ها
-    زمان ایجاد و بروزرسانی
+    this has two fields create_date, update_date and is an abstract model which other models
+    can inherit from it to have this field by default
+
+
+    the purpose of it is to set log time
+
 
     """
     create_date = models.DateTimeField(auto_now_add=True, verbose_name=_('created date'))
@@ -44,13 +48,31 @@ class BaseFieldsModel(models.Model):
         abstract = True
         ordering = ['create_date']
 
-    def update_field_model_obj(self, valid_data):
+    def update_field_model_obj(self, valid_data: dict) -> None:
+        '''
+        it finds all keys from valid_data that match with the fields which comes form the model that inherits
+        form this model and set their value
+
+        :param valid_data: dict
+        :return: None
+        '''
+
         for key, value in valid_data.items():
             if hasattr(self, key):
                 setattr(self, key, value)
 
 
 class BaseUserFieldModel(BaseFieldsModel):
+    '''
+    this has two fields created_by, updated_by and is an abstract model which other models
+    can inherit from it to have this field by default
+
+    the purpose of it is to log who is creating and updating
+
+    it inherits from BaseFieldsModel is meant to have create_date, update_date fields by default
+
+    '''
+
     created_by = models.ForeignKey('BaseUser.User', on_delete=models.DO_NOTHING, blank=True, null=True,
                                    verbose_name=_('created by'), related_name='created_%(class)ss')
     updated_by = models.ForeignKey('BaseUser.User', on_delete=models.DO_NOTHING, blank=True, null=True,
@@ -59,7 +81,15 @@ class BaseUserFieldModel(BaseFieldsModel):
     class Meta:
         abstract = True
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> None:
+        '''
+        at first time, it sets passed user to created_by and updated_by fields if pk is None
+        at other times, it sets passed user to updated_by fields if pk is not None
+
+        :param args:
+        :param kwargs: {user:user}
+        :return:
+        '''
         self.posted_user = kwargs.pop('user', None)
         if self.posted_user and not self.posted_user.is_anonymous:
             if self.pk is None:
@@ -69,8 +99,19 @@ class BaseUserFieldModel(BaseFieldsModel):
 
 
 class CustomUserManager(UserManager):
+    '''
+    custom manager for User model
+    '''
 
     def create_user(self, email=None, password=None, **extra_fields):
+        '''
+        it takes all user field value from extra_fields and sets username with given mobile_number
+
+        :param email:
+        :param password:
+        :param extra_fields:
+        :return:
+        '''
         username = extra_fields.get('mobile_number')
         user = super(CustomUserManager, self).create_user(username, email=email, password=password, **extra_fields)
         return user
@@ -78,7 +119,7 @@ class CustomUserManager(UserManager):
 
 class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     """
-    مدل انتزاعی برای ایجاد کاربران جدید
+    custom user model
     """
     GENDER_SELECT = (
         ('female', _('female')),
@@ -103,6 +144,12 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     objects = CustomUserManager()
 
     def __init__(self, *args, **kwargs):
+        '''
+        it sets username field with mobile_number field
+
+        :param args:
+        :param kwargs:
+        '''
         kwargs.pop('email', None)
         super(User, self).__init__(*args, **kwargs)
         self.username = self.mobile_number
@@ -112,6 +159,10 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
 
 
 class OutstandingAccessToken(models.Model):
+    '''
+    it will be removed
+    '''
+    # todo: delete this model instead use OutstandingToken from rest_framework_simplejwt
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -126,6 +177,11 @@ class OutstandingAccessToken(models.Model):
 
 
 class BlackListedAccessToken(models.Model):
+    '''
+    it will be removed
+    '''
+
+    # todo: delete this model instead use BlackListedToken from rest_framework_simplejwt
     token = models.CharField(max_length=500)
     user = models.ForeignKey(User, related_name="token_user", on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)

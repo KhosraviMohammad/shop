@@ -18,6 +18,15 @@ class JWTAuthTokenManager(AbstractAuthTokenManager):
         return CustomJWTAuthentication
 
     def revoke_token(self, user, token=None):
+        '''
+
+        it bocks all refresh and access tokens which stored in database
+
+        :param user:
+        :param token:
+        :return:
+        '''
+
         # blocking all access_token
         outstanding_access_token_qu = OutstandingAccessToken.objects.filter(user=user)
         black_list_access_qu = BlackListedAccessToken.objects.filter(user=user).values('token')

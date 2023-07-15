@@ -8,6 +8,10 @@ from django.utils.translation import gettext_lazy as _
 # Create your views here.
 
 class AccessTokenBlockView(generics.GenericAPIView):
+    '''
+    this view is for blocking given single token
+    '''
+
     serializer_class = BlockAccessTokenSerializer
 
     def post(self, request, *args, **kwargs):

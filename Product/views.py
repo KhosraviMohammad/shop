@@ -14,6 +14,10 @@ from generic import classes as g_classes
 
 
 class ProductView(viewsets.ModelViewSet):
+    '''
+    a view for Product crud
+    '''
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [g_classes.IsAdminUserOrReadOnlyPermission]
@@ -21,6 +25,9 @@ class ProductView(viewsets.ModelViewSet):
 
 
 class CategoryView(viewsets.ModelViewSet):
+    '''
+    a view for Category crud
+    '''
     queryset = Category.objects.all().prefetch_related('product_set')
     serializer_class = CategorySerializer
     permission_classes = [g_classes.IsAdminUserOrReadOnlyPermission]

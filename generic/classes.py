@@ -16,13 +16,25 @@ class IsAdminUserOrReadOnlyPermission(IsAdminUser):
 
 
 class GenericHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
+    '''
+    this Serializer customized create and update for following purpose
+
+    the purpose of it is to set user to obj of models which inherit from BaseUserFieldModel via BaseUserFieldModel.save(user=user)
+    '''
 
     def __init__(self, *args, **kwargs):
         super(GenericHyperlinkedModelSerializer, self).__init__(*args, **kwargs)
+        # to check if Subclass.Meta.model inherits from BaseUserFieldModel else assert
         assert issubclass(self.Meta.model, BaseUserFieldModel), \
             f'{type(self).__name__}.Meta.model does not inheritance from BaseUserFieldModel'
 
     def create(self, validated_data):
+        '''
+        the logics come form parent with some lines changes to automate custom purpose
+
+        :param validated_data:
+        :return:
+        '''
 
         serializers.raise_errors_on_nested_writes('create', self, validated_data)
 
@@ -39,6 +51,8 @@ class GenericHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
 
         try:
             instance = ModelClass(**validated_data)
+
+            # this line will set user for instance of model that extends BaseUserFieldModel
             instance.save(user=self.context['request'].user)
         except TypeError:
             tb = traceback.format_exc()
@@ -84,6 +98,7 @@ class GenericHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
             else:
                 setattr(instance, attr, value)
 
+        # this line will set user for instance of model that extends BaseUserFieldModel
         instance.save(user=self.context['request'].user)
 
         # Note that many-to-many fields are set after updating instance.
