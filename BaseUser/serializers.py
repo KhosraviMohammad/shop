@@ -66,7 +66,7 @@ class BlockAccessTokenSerializer(serializers.Serializer):
         '''
         fist it validates given access token and then blocks it
 
-        if a token is in invalid, it raises ValidationError
+        if a token is invalid, it raises ValidationError
 
         :param attrs:
         :return:

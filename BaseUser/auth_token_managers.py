@@ -33,6 +33,13 @@ class JWTAuthTokenManager(AbstractAuthTokenManager):
         BlacklistedToken.objects.bulk_create(black_list_token_obj_ls)
 
     def provide_token(self, user: 'AbstractBaseUser'):
+        '''
+        it returns generated token
+
+        :param user:
+        :return: {access:access, refresh:refresh}
+        '''
+
         state_full_jwt = generate_state_full_jwt(user)
 
         return state_full_jwt

@@ -2,4 +2,8 @@ from rest_framework_simplejwt.tokens import AccessToken, BlacklistMixin
 
 
 class GenericAccessToken(BlacklistMixin, AccessToken):
-    pass
+    '''
+    customized access token
+
+    purpose of it is to add capable of blocking to AccessToken
+    '''
