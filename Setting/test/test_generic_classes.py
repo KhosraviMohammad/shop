@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test.utils import isolate_apps
 from django.db import models, connection
-from rest_framework.reverse import reverse
-from django.urls import resolve
+
+from rest_framework.views import APIView
 
 from BaseUser.models import BaseUserFieldModel
 from generic.utils_test import APITransactionTestCase, APIRequestFactory, APIRequestTestCase
@@ -96,12 +96,52 @@ class TestIsAdminUserOrReadOnlyPermission(APIRequestTestCase):
         self.state_full_token = generate_state_full_jwt(user=self.user)
         self.request = APIRequestFactory()
 
-    # def test_has_permission(self):
-    #     request_post = self.request
-    #     request_put = self.request
-    #     request_get = self.request
-    #     request_patch = self.request
-    #     request_post.user = self.user
-    #     view, args, kwargs = resolve(request.path)
+    def test_has_permission(self):
+        class TestView(APIView):
+            permission_classes = [IsAdminUserOrReadOnlyPermission]
+
+        request_post = self.request.post('')
+        request_put = self.request.put('')
+        request_get = self.request.get('')
+        request_patch = self.request.patch('')
+
+        request_post.user = self.user
+        request_put.user = self.user
+        request_get.user = self.user
+        request_patch.user = self.user
+
         permission_obj = IsAdminUserOrReadOnlyPermission()
-    #     permission_obj.has_permission(request, view.cls)
+
+        self.assertTrue(permission_obj.has_permission(request_post, TestView))
+        self.assertTrue(permission_obj.has_permission(request_put, TestView))
+        self.assertTrue(permission_obj.has_permission(request_get, TestView))
+        self.assertTrue(permission_obj.has_permission(request_patch, TestView))
+
+    def test_has_permission_by_simple_user(self):
+        simple_user_field = {
+            'mobile_number': '09103791345',
+            'first_name': 'Mohammad',
+            'last_name': 'Khosravi',
+            'password': 'amir'
+        }
+        simple_user = User.objects.create_user(**simple_user_field)
+
+        class TestView(APIView):
+            permission_classes = [IsAdminUserOrReadOnlyPermission]
+
+        request_post = self.request.post('')
+        request_put = self.request.put('')
+        request_get = self.request.get('')
+        request_patch = self.request.patch('')
+
+        request_post.user = simple_user
+        request_put.user = simple_user
+        request_get.user = simple_user
+        request_patch.user = simple_user
+
+        permission_obj = IsAdminUserOrReadOnlyPermission()
+
+        self.assertFalse(permission_obj.has_permission(request_post, TestView))
+        self.assertFalse(permission_obj.has_permission(request_put, TestView))
+        self.assertTrue(permission_obj.has_permission(request_get, TestView))
+        self.assertFalse(permission_obj.has_permission(request_patch, TestView))
