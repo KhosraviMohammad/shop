@@ -12,18 +12,18 @@ services:
     volumes:
       - ./:/shop
     environment:
-      'DB_ENGINE': django.db.backends.mysql
-      'DB_NAME': shop
-      'DB_USER': root1
-      'DB_PASSWORD': amir
-      'DB_HOST': mysql
-      'DB_PORT': 3306
-#      'DB_ENGINE': django.db.backends.postgresql_psycopg2
+#      'DB_ENGINE': django.db.backends.mysql
 #      'DB_NAME': shop
-#      'DB_USER': postgres
+#      'DB_USER': root
 #      'DB_PASSWORD': amir
-#      'DB_HOST': postgres
-#      'DB_PORT': 5432
+#      'DB_HOST': mysql
+#      'DB_PORT': 3306
+      'DB_ENGINE': django.db.backends.postgresql_psycopg2
+      'DB_NAME': shop
+      'DB_USER': postgres
+      'DB_PASSWORD': amir
+      'DB_HOST': postgres
+      'DB_PORT': 5432
       'DEBUG': "False"
       'SECRET_KEY': asldmasfnfindsoijeqoj213j2djiai8u32798ryhwwhc7934y
       'ALLOWED_HOSTS': "*"
