@@ -1,13 +1,8 @@
 from django.contrib.auth import get_user_model
-from django.test.utils import isolate_apps
-from django.db import models, connection
-
-from rest_framework.views import APIView
 
 from Product.models import Product, Category
-from generic.utils_test import APITransactionTestCase, APIRequestFactory, APIRequestTestCase
+from generic.utils_test import APITransactionTestCase
 from generic.funcs import generate_state_full_jwt
-from generic.classes import GenericHyperlinkedModelSerializer, IsAdminUserOrReadOnlyPermission
 
 User = get_user_model()
 

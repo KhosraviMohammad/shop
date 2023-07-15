@@ -2,8 +2,9 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
-from BaseUser.models import BlackListedAccessToken, OutstandingAccessToken
+from django.db import models
 
 
 class CustomJWTAuthentication(JWTAuthentication):
@@ -33,7 +34,10 @@ class CustomJWTAuthentication(JWTAuthentication):
         :param auth:
         :return:
         '''
-        if BlackListedAccessToken.objects.filter(
-                token=auth.token.decode()).exists() or not OutstandingAccessToken.objects.filter(
-            token=auth.token.decode()).exists():
+
+        try:
+            outstanding_token = OutstandingToken.objects.get(token=auth.token.decode())
+            if BlacklistedToken.objects.filter(token=outstanding_token).exists():
+                raise InvalidToken(_("token is not valid"))
+        except models.ObjectDoesNotExist:
             raise InvalidToken(_("token is not valid"))

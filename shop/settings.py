@@ -211,13 +211,13 @@ SIMPLE_JWT = {
     "TOKEN_OBTAIN_SERIALIZER": "BaseUser.serializers.CustomTokenObtainPairSerializer",
     'TOKEN_TYPE_CLAIM': 'token_type',
     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-
+    'AUTH_TOKEN_CLASSES': ('BaseUser.tokens.GenericAccessToken',),
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-
+    # 'ACCESS_TOKEN_BLACKLIST': True,
 }
 
 # Django REST Registration
@@ -230,8 +230,6 @@ REST_REGISTRATION = {
     'RESET_PASSWORD_VERIFICATION_ENABLED': False,
     'REGISTER_SERIALIZER_PASSWORD_CONFIRM': False,
     'REGISTER_SERIALIZER_CLASS': 'BaseUser.serializers.UserRegisterSerializer',
-    'AUTH_TOKEN_MANAGER_CLASS': 'BaseUser.auth_token_managers.JWTAuthTokenManager',
-    'LOGIN_RETRIEVE_TOKEN': True,
 
 }
 
@@ -245,11 +243,3 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 
 AUTH_USER_MODEL = 'BaseUser.User'
-
-# Translation
-# https://docs.djangoproject.com/en/4.2/topics/i18n/translation/
-
-
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)

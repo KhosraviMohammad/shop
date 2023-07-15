@@ -1,13 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
-from generic.utils_test import APIViewTestCase, APIRequestTestCase
+
+from generic.utils_test import APIRequestTestCase
 
 from generic.funcs import generate_state_full_jwt
-from BaseUser.models import OutstandingAccessToken, BlackListedAccessToken
 
-from BaseUser.serializers import UserRegisterSerializer, TokenObtainSerializer, BlockAccessTokenSerializer, \
-    CustomTokenObtainPairSerializer
+from BaseUser.serializers import UserRegisterSerializer, BlockAccessTokenSerializer, CustomTokenObtainPairSerializer
 
 User = get_user_model()
 
@@ -61,7 +61,7 @@ class TestCustomTokenObtainPairSerializer(APIRequestTestCase):
         validated_data = user_register_serializer.validated_data
         self.assertIn('access', validated_data)
         self.assertIn('refresh', validated_data)
-        self.assertTrue(OutstandingAccessToken.objects.filter(token=validated_data.get('access')).exists())
+        self.assertTrue(OutstandingToken.objects.filter(token=validated_data.get('access')).exists())
 
 
 class TestBlockAccessTokenSerializer(APIRequestTestCase):
@@ -82,7 +82,7 @@ class TestBlockAccessTokenSerializer(APIRequestTestCase):
         request = self.request_post(data={'access': self.state_full_token.get('access')})
         block_access_token_serializer = BlockAccessTokenSerializer(data=request.POST, context={'request': request})
         block_access_token_serializer.is_valid()
-        self.assertTrue(BlackListedAccessToken.objects.filter(token=self.state_full_token.get('access')).exists())
+        self.assertTrue(BlacklistedToken.objects.filter(token__token=self.state_full_token.get('access')).exists())
 
     def test_invalid_access_token_not_to_block(self):
         request = self.request_post(data={'access': self.state_full_token.get('refresh')})
@@ -94,7 +94,8 @@ class TestBlockAccessTokenSerializer(APIRequestTestCase):
         self.assertRaises(serializers.ValidationError, block_access_token_serializer.is_valid, raise_exception=True)
 
     def test_not_to_authenticate_user_with_blocked_token(self):
-        BlackListedAccessToken.objects.create(user=self.user, token=self.state_full_token.get('access'))
+        access_outstanding_token = OutstandingToken.objects.get(user=self.user, token=self.state_full_token.get('access'))
+        BlacklistedToken.objects.create(token=access_outstanding_token)
         request = self.request_post(data={'access': self.state_full_token.get('access')})
         block_access_token_serializer = BlockAccessTokenSerializer(data=request.POST, context={'request': request})
         self.assertRaises(serializers.ValidationError, block_access_token_serializer.is_valid, raise_exception=True)

@@ -157,37 +157,3 @@ class User(AbstractBaseUser, BaseFieldsModel, PermissionsMixin):
     def __str__(self):
         return '{} {}'.format(self.first_name, self.last_name)
 
-
-class OutstandingAccessToken(models.Model):
-    '''
-    it will be removed
-    '''
-    # todo: delete this model instead use OutstandingToken from rest_framework_simplejwt
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
-    )
-
-    token = models.TextField()
-
-    class Meta:
-        ordering = ("user",)
-
-    def __str__(self):
-        return _("Token for {} ".format(self.user))
-
-
-class BlackListedAccessToken(models.Model):
-    '''
-    it will be removed
-    '''
-
-    # todo: delete this model instead use BlackListedToken from rest_framework_simplejwt
-    token = models.CharField(max_length=500)
-    user = models.ForeignKey(User, related_name="token_user", on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ("token", "user")
-
-    def __str__(self):
-        return _(f"Blacklisted token for {self.user}")

@@ -115,3 +115,4 @@ class GenericHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
+

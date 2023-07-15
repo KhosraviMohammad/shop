@@ -6,8 +6,11 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.serializers import TokenBlacklistSerializer, TokenObtainSerializer
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from rest_framework_simplejwt.exceptions import TokenError
 
-from BaseUser.models import User, BlackListedAccessToken, OutstandingAccessToken
+from BaseUser.models import User
+from BaseUser.tokens import GenericAccessToken
 from generic.funcs import generate_state_full_jwt
 
 
@@ -57,6 +60,7 @@ class BlockAccessTokenSerializer(serializers.Serializer):
     '''
 
     access = serializers.CharField()
+    token_class = GenericAccessToken
 
     def validate(self, attrs):
         '''
@@ -68,26 +72,14 @@ class BlockAccessTokenSerializer(serializers.Serializer):
         :return:
         '''
 
-        # validate given data by super class
-        data = super().validate(attrs)
+        # takes access token obj
+        try:
+            access = self.token_class(attrs["access"])
+        except TokenError:
+            raise serializers.ValidationError('Token has wrong type')
+        try:
+            access.blacklist()
+        except AttributeError:
+            pass
 
-        # takes access token
-        raw_access_token = data.get('access')
-
-        # following several lines check if a token is valid then blocks it otherwise raises ValidationError
-        # two lines below checks the token is stored in OutstandingAccessToken else raises ValidationError
-        outstanding_access_token_qu = OutstandingAccessToken.objects.filter(token=raw_access_token)
-        if outstanding_access_token_qu.exists():
-            # generating access token obj (rest_framework_simplejwt.tokens.AccessToken) from raw token
-            access_token_obj = api_settings.AUTH_TOKEN_CLASSES[0](raw_access_token)
-            user_id = access_token_obj.payload.get('user_id')
-            # it checks the token is not in BlackListedAccessToken if it is not, it will block access toke
-            # in BlackListedAccessToken else ValidationError
-            if not BlackListedAccessToken.objects.filter(token=raw_access_token, user_id=user_id).exists():
-                BlackListedAccessToken.objects.create(token=raw_access_token, user_id=user_id)
-            else:
-                raise serializers.ValidationError(_('token is not valid'))
-        else:
-            raise serializers.ValidationError(_('token is not valid'))
-
-        return data
+        return {}
